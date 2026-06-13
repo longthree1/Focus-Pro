@@ -44,9 +44,6 @@
 
 (Đang chuẩn bị publish)
 
-## 🖼️ Hình ảnh minh họa
-
-> *Bạn nên chụp thêm vài ảnh demo đẹp rồi đẩy lên (rất quan trọng để người ta thấy ngay giá trị)*
 
 ## 🛠️ Công nghệ sử dụng
 
