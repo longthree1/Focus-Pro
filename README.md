@@ -3,8 +3,7 @@
 > **Trải nghiệm xem video Facebook/Reels như rạp chiếu phim ngay trên trình duyệt** — với giao diện điều khiển hiện đại, tự ẩn thông minh và nhiều tính năng chuyên nghiệp.
 
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com) 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue)](https://github.com/YOUR_USERNAME/fb-reel-focus-pro)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue)](https://github.com/longthree1/fb-reel-focus-pro)
 
 ## ✨ Tính năng nổi bật
 
