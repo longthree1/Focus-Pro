@@ -1,4 +1,4 @@
-# FB Reel Focus Pro
+# Focus Pro
 
 > **Trải nghiệm xem video Facebook/Reels như rạp chiếu phim ngay trên trình duyệt** — với giao diện điều khiển hiện đại, tự ẩn thông minh và nhiều tính năng chuyên nghiệp.
 
