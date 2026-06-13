@@ -63,11 +63,6 @@
 - Thêm video removal observer
 - Tối ưu hiệu năng và trải nghiệm người dùng
 
-## 🤝 Đóng góp
-
-Mọi ý kiến đóng góp, báo lỗi hoặc tính năng mới đều rất được hoan nghênh!  
-Hãy mở issue hoặc pull request nhé.
-
 ## 📜 License
 
 MIT License
