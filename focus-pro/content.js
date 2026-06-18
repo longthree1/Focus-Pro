@@ -1,11 +1,11 @@
 (() => {
   'use strict';
 
-  const FLAG = '__FB_REEL_FOCUS_PRO__';
+  const FLAG = '__FOCUS_PRO__';
   if (window[FLAG]) return;
   window[FLAG] = true;
 
-  const EXT = 'fb-reel-focus-pro';
+  const EXT = 'focus-pro';
   const Z = 2147483646;
   const HIDE_DELAY = 3000;
 
@@ -37,6 +37,7 @@
     lastMouseMove: 0,
     lastPointerX: null,
     lastPointerY: null,
+    playbackRate: 1,
   };
 
   const isTypingTarget = (el) => {
@@ -402,6 +403,7 @@
       if (typeof old.volume === 'number') video.volume = clamp(old.volume, 0, 1);
       if (old.tabIndex === null) video.removeAttribute('tabindex'); else video.setAttribute('tabindex', old.tabIndex);
     }
+    video.playbackRate = 1;
   }
 
   function iconSvg(name) {
@@ -418,7 +420,8 @@
       audioUnlock: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10H4Z"/><path d="M16 10.5v-1.2a2.8 2.8 0 0 1 4.9-1.8"/><rect x="15" y="10.5" width="7" height="6.5" rx="1.5"/></svg>',
       fullscreen: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4"/></svg>',
       fullscreenExit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M20 15h-5v5M4 15h5v5"/></svg>',
-      close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+      close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+      speed: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><text x="12" y="21" text-anchor="middle" font-size="6" font-weight="700" fill="currentColor" stroke="none"></text></svg>'
     };
     return icons[name] || icons.play;
   }
@@ -487,6 +490,8 @@
       makeButton('fit-contain', 'contain', 'Vừa màn'),
       makeButton('zoom-out', 'zoomOut', 'Thu nhỏ'),
       makeButton('zoom-in', 'zoomIn', 'Phóng to'),
+      makeButton('audio-lock', 'audioLock', 'Khóa âm', `${EXT}-on`),
+      makeButton('speed', 'speed', 'Tốc độ phát'),
       makeButton('fullscreen', 'fullscreen', 'Toàn màn hình'),
       makeButton('close', 'close', 'Tắt Focus', `${EXT}-danger`)
     );
@@ -511,6 +516,8 @@
       if (act === 'fit-contain') setFit('contain', { preserveVisibility: true });
       if (act === 'zoom-in') zoomBy(0.1, { preserveVisibility: true });
       if (act === 'zoom-out') zoomBy(-0.1, { preserveVisibility: true });
+      if (act === 'audio-lock') toggleAudioLock({ preserveVisibility: true });
+      if (act === 'speed') cycleSpeed({ preserveVisibility: true });
       if (act === 'fullscreen') requestFullscreenSafe({ preserveVisibility: true });
       if (act === 'close') deactivate();
       if (act !== 'close') showControls('button');
@@ -593,6 +600,16 @@
 
     const containBtn = state.ui?.querySelector('button[data-act="fit-contain"]');
     if (containBtn) containBtn.classList.toggle(`${EXT}-on`, state.fit === 'contain');
+
+    // Update speed button label
+    const speedBtn = state.ui?.querySelector('button[data-act="speed"]') || document.querySelector(`#${EXT}-ui button[data-act="speed"]`);
+    if (speedBtn) {
+      const rate = v ? (v.playbackRate || 1) : 1;
+      speedBtn.innerHTML = `<span style="font-size:11px;font-weight:700;pointer-events:none;">${rate}×</span>`;
+      speedBtn.title = `Tốc độ ×${rate}`;
+      speedBtn.setAttribute('aria-label', `Tốc độ ×${rate}`);
+      speedBtn.classList.toggle(`${EXT}-on`, rate !== 1);
+    }
   }
 
   function updateProgressUi() {
@@ -770,7 +787,7 @@
     if (!state.shell) {
       saveOld(video);
 
-      const placeholder = document.createComment('FB_REEL_FOCUS_PLACEHOLDER');
+      const placeholder = document.createComment('FOCUS_PRO_PLACEHOLDER');
       if (video.parentNode) video.parentNode.insertBefore(placeholder, video);
       state.placeholder = placeholder;
 
@@ -870,10 +887,11 @@
     state.oldParent = null;
     state.oldNext = null;
     state.scale = 1;
+    state.playbackRate = 1;
     state.audioRepairTimeouts = null;
     state.controlsVisible = true;
     state.isDraggingProgress = false;
-    if (showToast) toast('Đã trả video về Facebook');
+    if (showToast) toast('Đã tắt Focus Mode');
   }
 
   function setFit(fit, options = {}) {
@@ -1006,6 +1024,21 @@
     preserveControlVisibility(options.preserveVisibility ? true : wasVisible);
   }
 
+  const SPEED_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+  function cycleSpeed(options = {}) {
+    const wasVisible = state.controlsVisible;
+    const v = state.activeVideo || findBestVideo();
+    if (!v) return;
+    const currentRate = v.playbackRate || 1;
+    const idx = SPEED_STEPS.indexOf(currentRate);
+    const nextRate = SPEED_STEPS[(idx + 1) % SPEED_STEPS.length];
+    v.playbackRate = nextRate;
+    state.playbackRate = nextRate;
+    updateUiLabels();
+    preserveControlVisibility(options.preserveVisibility ? true : wasVisible);
+    toast(`Tốc độ ×${nextRate}`);
+  }
+
   window.addEventListener('keydown', (e) => {
     if (isTypingTarget(e.target)) return;
 
@@ -1016,7 +1049,7 @@
     }
     if (e.altKey && e.code === 'KeyV') {
       e.preventDefault();
-      setFit('contain', { preserveVisibility: true });
+      setFit('cover', { preserveVisibility: true });
       return;
     }
     if (e.altKey && e.code === 'KeyF') {
@@ -1028,6 +1061,12 @@
       e.preventDefault();
       if (!state.activeVideo) activate({ fit: state.fit || 'cover' });
       toggleAudioLock({ preserveVisibility: true });
+      return;
+    }
+    if (e.altKey && e.code === 'KeyS') {
+      e.preventDefault();
+      if (!state.activeVideo) activate({ fit: state.fit || 'cover' });
+      cycleSpeed({ preserveVisibility: true });
       return;
     }
     if (e.altKey && e.code === 'KeyX') {
@@ -1082,16 +1121,12 @@
       }
       if (message.type === 'fullscreen') requestFullscreenSafe({ preserveVisibility: true });
       if (message.type === 'close') deactivate();
-      if (message.type === 'status') {
-        sendResponse({ ok: true, active: Boolean(state.activeVideo), fit: state.fit, scale: state.scale, audioLock: state.audioLock, controlsVisible: state.controlsVisible, lastError: state.lastError });
-        return true;
-      }
+      
       sendResponse({ ok: true, active: Boolean(state.activeVideo), fit: state.fit, scale: state.scale, audioLock: state.audioLock, controlsVisible: state.controlsVisible, lastError: state.lastError });
     } catch (err) {
       state.lastError = String(err?.message || err);
       sendResponse({ ok: false, error: state.lastError });
     }
-    return true;
   });
 
   // Cleanup handlers to prevent memory leaks on navigation
@@ -1102,18 +1137,8 @@
     }
   }
 
-  function handleVisibilityChange() {
-    if (document.hidden && state.activeVideo) {
-      // Pause video when tab becomes hidden to save resources
-      if (!state.activeVideo.paused) {
-        state.activeVideo.pause();
-      }
-    }
-  }
-
   window.addEventListener('beforeunload', cleanup, { once: true });
   window.addEventListener('pagehide', cleanup, { once: true });
-  document.addEventListener('visibilitychange', handleVisibilityChange);
 
   toast('Focus sẵn sàng: Alt+Z phóng đầy màn');
 })();

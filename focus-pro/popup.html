@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FB Reel Focus Pro</title>
+  <title>Focus Pro</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <header>
-    <div class="logo">□</div>
+    <img src="icons/icon48.png" class="logo" alt="Focus Pro">
     <div>
-      <h1>FB Reel Focus Pro</h1>
-      <p>Professional focus tools for video platforms.</p>
+      <h1>Focus Pro <span class="version-badge">v1.5.0</span></h1>
+      <p>Focus player for Facebook, Meet &amp; TikTok.</p>
     </div>
   </header>
 
@@ -24,17 +24,17 @@
     <div id="meet-controls" style="display: none;">
       <button class="primary" data-action="meet-focus">Focus Meet</button>
       <button class="danger" data-action="meet-close">Disable</button>
-      <p style="font-size: 12px; margin-top: 8px; color: #666;">Main share stream will be enlarged. Audio preserved.</p>
+      <p class="hint">Main share stream will be enlarged. Audio preserved.</p>
     </div>
 
     <div id="tiktok-controls" style="display: none;">
       <button class="primary" data-action="tiktok-clean">Clean Gifts</button>
       <button class="danger" data-action="tiktok-restore">Restore</button>
-      <p style="font-size: 12px; margin-top: 8px; color: #666;">Hide gift overlays and flying effects. Chat preserved.</p>
+      <p class="hint">Hide gift overlays and flying effects. Chat preserved.</p>
     </div>
 
     <section class="shortcuts">
-      <span><b>Shortcuts:</b> focus - disable</span>
+      <span><b>Alt+Z</b> — Focus &nbsp;·&nbsp; <b>Alt+V</b> — Cover &nbsp;·&nbsp; <b>Alt+X</b> — Disable</span>
     </section>
 
     <p id="status">Checking page…</p>

@@ -1,4 +1,4 @@
-const EXT = 'fb-reel-focus-pro';
+const EXT = 'focus-pro';
 const statusEl = document.getElementById('status');
 const fbControls = document.getElementById('fb-controls');
 const meetControls = document.getElementById('meet-controls');
@@ -72,10 +72,26 @@ document.addEventListener('keydown', async (e) => {
   
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id) return;
+
+  const url = tab.url || '';
+  const isMeet = /^https:\/\/meet\.google\.com\//.test(url);
+  const isTikTok = /^https:\/\/(www\.)?tiktok\.com\//.test(url);
   
   switch(e.key.toLowerCase()) {
-    case 'z': send('focus-contain', tab.id); break;
-    case 'x': send('close', tab.id); break;
+    case 'z':
+      if (isMeet) send('meet-focus', tab.id);
+      else if (isTikTok) send('tiktok-clean', tab.id);
+      else send('focus-contain', tab.id);
+      break;
+    case 'v':
+      if (!isMeet && !isTikTok) send('focus-cover', tab.id);
+      break;
+    case 'x':
+    case 'c':
+      if (isMeet) send('meet-close', tab.id);
+      else if (isTikTok) send('tiktok-restore', tab.id);
+      else send('close', tab.id);
+      break;
   }
   e.preventDefault();
 });

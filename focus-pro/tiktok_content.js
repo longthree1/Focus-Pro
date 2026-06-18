@@ -1,4 +1,4 @@
-const EXT = 'fb-reel-focus-pro';
+const EXT = 'focus-pro';
 let cleanInterval = null;
 let isCleanTikTok = false;
 let customStyle = null;
@@ -7,20 +7,19 @@ let debounceTimer = null;
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.source !== EXT) return;
-  
-  if (msg.type === 'status') {
-    sendResponse({ ok: true, active: isCleanTikTok, isTikTok: true });
-    return true;
-  }
-  if (msg.type === 'tiktok-clean') {
-    cleanTikTokLive();
-    sendResponse({ ok: true, active: true, isTikTok: true });
-    return true;
-  }
-  if (msg.type === 'tiktok-restore') {
-    restoreTikTokLive();
-    sendResponse({ ok: true, active: false, isTikTok: true });
-    return true;
+  try {
+    if (msg.type === 'status') {
+      sendResponse({ ok: true, active: isCleanTikTok, isTikTok: true });
+    } else if (msg.type === 'tiktok-clean') {
+      cleanTikTokLive();
+      sendResponse({ ok: true, active: true, isTikTok: true });
+    } else if (msg.type === 'tiktok-restore') {
+      restoreTikTokLive();
+      sendResponse({ ok: true, active: false, isTikTok: true });
+    }
+  } catch (err) {
+    console.error('[Focus Pro] TikTok message handler error:', err);
+    sendResponse({ ok: false, error: String(err?.message || err) });
   }
 });
 
@@ -30,7 +29,7 @@ function cleanTikTokLive() {
 
   if (!customStyle) {
     customStyle = document.createElement('style');
-    customStyle.id = 'fb-focus-tiktok-style';
+    customStyle.id = 'focus-pro-tiktok-style';
     customStyle.textContent = `
       /* CSS ẨN CÁC PHẦN TỬ LIÊN QUAN ĐẾN QUÀ TẶNG (GIFTS) VÀ ĐỒ BAY TRÊN TIKTOK LIVE */
       
@@ -90,7 +89,7 @@ function cleanTikTokLive() {
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  cleanInterval = setInterval(applyTikTokHeuristics, 600);
+  cleanInterval = null; // Removed setInterval, using MutationObserver only
   applyTikTokHeuristics();
 }
 
@@ -151,7 +150,7 @@ function applyTikTokHeuristics() {
               continue;
             }
 
-            console.log('[TikTok Clean] Hiding gift bar container:', p, 'due to text:', text);
+            console.log('[Focus Pro] Hiding gift bar container:', p, 'due to text:', text);
             p.style.display = 'none';
             p.classList.add('fb-hidden-tiktok-el');
             break;
@@ -183,7 +182,7 @@ function applyTikTokHeuristics() {
         const finalClass = (p.className || '').toLowerCase();
         const hasTime = p.textContent && /\d{1,2}:\d{2}/.test(p.textContent);
         if (!finalClass.includes('control') && !finalClass.includes('player') && !hasTime) {
-          console.log('[TikTok Clean] Hiding gift notification:', p, 'due to text:', text);
+          console.log('[Focus Pro] Hiding gift notification:', p, 'due to text:', text);
           p.style.display = 'none';
           p.classList.add('fb-hidden-tiktok-el');
         }
@@ -215,9 +214,21 @@ function restoreTikTokLive() {
   });
 }
 
-// Phím tắt nhanh Alt+X để tắt chế độ ẩn quà tặng
+const isTypingTarget = (el) => {
+  if (!el) return false;
+  const tag = (el.tagName || '').toLowerCase();
+  return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+};
+
+// Phím tắt nhanh Alt+Z/Alt+X để bật/tắt chế độ ẩn quà tặng
 document.addEventListener('keydown', (e) => {
+  if (isTypingTarget(e.target)) return;
+  if (e.altKey && e.key.toLowerCase() === 'z') {
+    e.preventDefault();
+    if (!isCleanTikTok) cleanTikTokLive();
+  }
   if (e.altKey && e.key.toLowerCase() === 'x') {
+    e.preventDefault();
     if (isCleanTikTok) restoreTikTokLive();
   }
 });

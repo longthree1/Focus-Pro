@@ -1,4 +1,4 @@
-const EXT = 'fb-reel-focus-pro';
+const EXT = 'focus-pro';
 let hideInterval = null;
 let isFocusMeet = false;
 let customStyle = null;
@@ -7,27 +7,21 @@ let storedSelfVideoTile = null; // Direct reference to self-video element
 let storedTopBar = null; // Cache for the top bar element
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.source !== EXT) return;
   try {
-    if (msg.source !== EXT) return;
     if (msg.type === 'status') {
       sendResponse({ ok: true, active: isFocusMeet, isMeet: true });
-      return true;
-    }
-    if (msg.type === 'meet-focus') {
+    } else if (msg.type === 'meet-focus') {
       focusMeetVideo();
       sendResponse({ ok: true, active: true, isMeet: true });
-      return true;
-    }
-    if (msg.type === 'meet-close') {
+    } else if (msg.type === 'meet-close') {
       unfocusMeetVideo();
       sendResponse({ ok: true, active: false, isMeet: true });
-      return true;
     }
   } catch (err) {
-    console.error('[FB Reel Focus] Meet message handler error:', err);
+    console.error('[Focus Pro] Meet message handler error:', err);
     sendResponse({ ok: false, error: String(err?.message || err) });
   }
-  return true;
 });
 
 /**
@@ -171,7 +165,7 @@ function focusMeetVideo() {
 
   if (!customStyle) {
     customStyle = document.createElement('style');
-    customStyle.id = 'fb-focus-meet-style';
+    customStyle.id = 'focus-pro-meet-style';
     customStyle.textContent = `
       /* 1. HIDE CHAT PANELS & MESSAGES */
       div[aria-label*="chat" i][role="dialog"],
@@ -347,8 +341,20 @@ function unfocusMeetVideo() {
   });
 }
 
+const isTypingTarget = (el) => {
+  if (!el) return false;
+  const tag = (el.tagName || '').toLowerCase();
+  return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+};
+
 document.addEventListener('keydown', (e) => {
+  if (isTypingTarget(e.target)) return;
+  if (e.altKey && e.key.toLowerCase() === 'z') {
+    e.preventDefault();
+    if (!isFocusMeet) focusMeetVideo();
+  }
   if (e.altKey && e.key.toLowerCase() === 'x') {
+    e.preventDefault();
     if (isFocusMeet) unfocusMeetVideo();
   }
 });
