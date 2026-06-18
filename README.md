@@ -23,8 +23,6 @@
 | `Alt + V`         | Focus Cover (phóng đầy, crop - chỉ FB) |
 | `Alt + F`         | Fullscreen thật (không có UI trình duyệt) |
 | `Alt + X`         | Thoát Focus / Tắt chế độ (cả FB, Meet, TikTok) |
-| `Alt + A`         | Bật/Tắt Khóa âm                    |
-| `Alt + S`         | Cycle tốc độ phát (0.5x → 2x)      |
 | `Space`           | Play / Pause                       |
 | `←` `→`           | Tua nhanh 5 giây                   |
 | `↑` `↓`           | Tăng / Giảm âm lượng               |
