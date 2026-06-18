@@ -544,7 +544,6 @@
       makeButton('zoom-out', 'zoomOut', 'Thu nhỏ'),
       makeButton('zoom-in', 'zoomIn', 'Phóng to'),
       makeButton('speed', 'speed', 'Tốc độ phát'),
-      makeButton('open-watch', 'watch', 'Mở tab Watch'),
       makeButton('fullscreen', 'fullscreen', 'Toàn màn hình'),
       makeButton('close', 'close', 'Tắt Focus', `${EXT}-danger`)
     );
@@ -1128,8 +1127,7 @@
     const v = state.activeVideo || findBestVideo();
     if (!v) return;
     const currentRate = v.playbackRate || 1;
-    const idx = SPEED_STEPS.indexOf(currentRate);
-    const nextRate = SPEED_STEPS[(idx + 1) % SPEED_STEPS.length];
+    const nextRate = currentRate === 2 ? 1 : 2;
     setSpeed(nextRate, options);
   }
 
@@ -1179,8 +1177,7 @@
 
     if (e.altKey && e.code === 'KeyS') {
       e.preventDefault();
-      if (!state.activeVideo) activate({ fit: state.fit || 'cover' });
-      cycleSpeed({ preserveVisibility: true });
+      cycleSpeed();
       return;
     }
     if (e.altKey && e.code === 'KeyW') {
@@ -1259,5 +1256,4 @@
   window.addEventListener('beforeunload', cleanup, { once: true });
   window.addEventListener('pagehide', cleanup, { once: true });
 
-  toast('Focus sẵn sàng: Alt+Z phóng đầy màn');
 })();

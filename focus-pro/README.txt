@@ -20,15 +20,15 @@ Phím tắt:
 Alt+Z: Focus contain (vừa màn FB) / Bật Focus Meet / Bật Clean Gifts (TikTok)
 Alt+V: Focus cover (phóng đầy, crop - FB)
 Alt+X: Thoát Focus / Disable (cả FB, Meet, TikTok)
-Alt+W: Mở Reel ở tab Facebook Watch (↗)
-Alt+S: Cycle tốc độ phát (0.5x → 2x)
+Alt+W: Mở Reel ở tab Facebook Watch (bằng phím tắt)
+Alt+S: Chuyển nhanh tốc độ (1x ↔ 2x)
 Space: Play/Pause
 ← / →: Tua 5 giây
 + / -: Zoom
 M: Tắt/bật tiếng thủ công
 
 Nút trên overlay (hiện khi hover):
-- [C] contain · [V] cover · [−] [+] zoom · [1×] speed · [↗] open watch · [×] thoát
+- [C] contain · [V] cover · [−] [+] zoom · [1×] speed · [×] thoát
 
 Nền tảng hỗ trợ:
 - Facebook: Video Reels, Watch, posts
