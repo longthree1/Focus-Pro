@@ -315,6 +315,58 @@
         transform: translateX(-50%) translateY(0) !important;
       }
 
+      #${EXT}-speed-menu {
+        position: absolute !important;
+        bottom: calc(100% + 12px) !important;
+        right: 46px !important;
+        background: linear-gradient(180deg, rgba(28,30,36,.86), rgba(18,19,22,.76)) !important;
+        border: 1px solid rgba(255,255,255,.12) !important;
+        border-radius: 14px !important;
+        padding: 6px !important;
+        display: flex !important;
+        flex-direction: column-reverse !important;
+        gap: 2px !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,.5) !important;
+        backdrop-filter: blur(20px) saturate(1.25) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(1.25) !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+        transform: translateY(10px) scale(0.95) !important;
+        transition: opacity .15s ease, transform .15s ease !important;
+        z-index: ${Z + 2} !important;
+      }
+      #${EXT}-speed-menu.show {
+        pointer-events: auto !important;
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+      }
+      #${EXT}-speed-menu button {
+        width: 100% !important;
+        min-width: 60px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: rgba(255,255,255,.8) !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        padding: 0 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #${EXT}-speed-menu button:hover {
+        background: rgba(255,255,255,.12) !important;
+        color: #fff !important;
+        transform: translateY(0) !important;
+      }
+      #${EXT}-speed-menu button.${EXT}-active-speed {
+        color: #fff !important;
+        background: rgba(255,255,255,.16) !important;
+      }
+
       @media (max-width: 560px) {
         .${EXT}-panel { width: min(96vw, 670px) !important; padding: 7px 8px 8px !important; }
         .${EXT}-progress-row { grid-template-columns: 38px 1fr 38px !important; gap: 6px !important; }
@@ -490,13 +542,24 @@
       makeButton('fit-contain', 'contain', 'Vừa màn'),
       makeButton('zoom-out', 'zoomOut', 'Thu nhỏ'),
       makeButton('zoom-in', 'zoomIn', 'Phóng to'),
-      makeButton('audio-lock', 'audioLock', 'Khóa âm', `${EXT}-on`),
       makeButton('speed', 'speed', 'Tốc độ phát'),
       makeButton('fullscreen', 'fullscreen', 'Toàn màn hình'),
       makeButton('close', 'close', 'Tắt Focus', `${EXT}-danger`)
     );
 
-    panel.append(progressRow, controlRow);
+    const speedMenu = document.createElement('div');
+    speedMenu.id = `${EXT}-speed-menu`;
+    const speedSteps = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    speedSteps.forEach(rate => {
+      const btn = document.createElement('button');
+      btn.textContent = rate === 1 ? 'Chuẩn' : `${rate}x`;
+      btn.dataset.speed = rate;
+      if (rate === state.playbackRate) btn.classList.add(`${EXT}-active-speed`);
+      speedMenu.appendChild(btn);
+    });
+
+    panel.style.position = 'relative';
+    panel.append(speedMenu, progressRow, controlRow);
     bottom.append(panel);
     ui.append(bottom);
 
@@ -505,11 +568,31 @@
     ui.addEventListener('pointerleave', () => scheduleHideControls());
 
     ui.addEventListener('click', (e) => {
+      const speedBtn = e.target.closest(`#${EXT}-speed-menu button`);
+      if (speedBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const rate = parseFloat(speedBtn.dataset.speed);
+        setSpeed(rate, { preserveVisibility: true });
+        const menu = state.ui.querySelector(`#${EXT}-speed-menu`);
+        if (menu) menu.classList.remove('show');
+        return;
+      }
+
       const btn = e.target.closest('button[data-act]');
-      if (!btn) return;
+      if (!btn) {
+        const menu = state.ui?.querySelector(`#${EXT}-speed-menu`);
+        if (menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+        return;
+      }
+      
       e.preventDefault();
       e.stopPropagation();
       const act = btn.dataset.act;
+      const menu = state.ui.querySelector(`#${EXT}-speed-menu`);
+
       if (act === 'seek-back') seekBy(-10, { preserveVisibility: true });
       if (act === 'seek-forward') seekBy(10, { preserveVisibility: true });
       if (act === 'play') togglePlay({ preserveVisibility: true });
@@ -517,7 +600,11 @@
       if (act === 'zoom-in') zoomBy(0.1, { preserveVisibility: true });
       if (act === 'zoom-out') zoomBy(-0.1, { preserveVisibility: true });
       if (act === 'audio-lock') toggleAudioLock({ preserveVisibility: true });
-      if (act === 'speed') cycleSpeed({ preserveVisibility: true });
+      if (act === 'speed') {
+        if (menu) menu.classList.toggle('show');
+      } else {
+        if (menu) menu.classList.remove('show');
+      }
       if (act === 'fullscreen') requestFullscreenSafe({ preserveVisibility: true });
       if (act === 'close') deactivate();
       if (act !== 'close') showControls('button');
@@ -609,6 +696,15 @@
       speedBtn.title = `Tốc độ ×${rate}`;
       speedBtn.setAttribute('aria-label', `Tốc độ ×${rate}`);
       speedBtn.classList.toggle(`${EXT}-on`, rate !== 1);
+    }
+
+    // Update speed menu active item
+    const speedMenuBtns = state.ui?.querySelectorAll(`#${EXT}-speed-menu button`);
+    if (speedMenuBtns) {
+      const rate = v ? (v.playbackRate || 1) : 1;
+      speedMenuBtns.forEach(b => {
+        b.classList.toggle(`${EXT}-active-speed`, parseFloat(b.dataset.speed) === rate);
+      });
     }
   }
 
@@ -1026,17 +1122,23 @@
 
   const SPEED_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
   function cycleSpeed(options = {}) {
-    const wasVisible = state.controlsVisible;
     const v = state.activeVideo || findBestVideo();
     if (!v) return;
     const currentRate = v.playbackRate || 1;
     const idx = SPEED_STEPS.indexOf(currentRate);
     const nextRate = SPEED_STEPS[(idx + 1) % SPEED_STEPS.length];
-    v.playbackRate = nextRate;
-    state.playbackRate = nextRate;
+    setSpeed(nextRate, options);
+  }
+
+  function setSpeed(rate, options = {}) {
+    const wasVisible = state.controlsVisible;
+    const v = state.activeVideo || findBestVideo();
+    if (!v) return;
+    v.playbackRate = rate;
+    state.playbackRate = rate;
     updateUiLabels();
     preserveControlVisibility(options.preserveVisibility ? true : wasVisible);
-    toast(`Tốc độ ×${nextRate}`);
+    toast(`Tốc độ ${rate === 1 ? 'chuẩn' : rate + 'x'}`);
   }
 
   window.addEventListener('keydown', (e) => {
@@ -1057,12 +1159,7 @@
       requestFullscreenSafe({ preserveVisibility: true });
       return;
     }
-    if (e.altKey && e.code === 'KeyA') {
-      e.preventDefault();
-      if (!state.activeVideo) activate({ fit: state.fit || 'cover' });
-      toggleAudioLock({ preserveVisibility: true });
-      return;
-    }
+
     if (e.altKey && e.code === 'KeyS') {
       e.preventDefault();
       if (!state.activeVideo) activate({ fit: state.fit || 'cover' });

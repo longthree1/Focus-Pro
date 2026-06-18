@@ -12,20 +12,20 @@ Cập nhật v1.5.0:
 - Cập nhật Meet: tối ưu DOM scanning, thêm typing guard, thêm phím tắt bật/tắt (Alt+Z / Alt+X).
 - Sửa lỗi icon extension và lỗi gửi nhầm lệnh tắt/bật từ Popup trên các trang khác nhau.
 - Khắc phục lỗi rò rỉ message port trên toàn bộ extension.
+- Hỗ trợ phím tắt Alt+S để đổi tốc độ phát video.
 
 Phím tắt:
 Alt+Z: Focus contain (vừa màn FB) / Bật Focus Meet / Bật Clean Gifts (TikTok)
 Alt+V: Focus cover (phóng đầy, crop - FB)
 Alt+X: Thoát Focus / Disable (cả FB, Meet, TikTok)
-Alt+A: Bật/tắt Audio Lock
-Alt+S: Cycle tốc độ phát
+Alt+S: Cycle tốc độ phát (0.5x → 2x)
 Space: Play/Pause
 ← / →: Tua 5 giây
 + / -: Zoom
 M: Tắt/bật tiếng thủ công
 
 Nút trên overlay (hiện khi hover):
-- [C] contain · [V] cover · [−] [+] zoom · [🔊] audio lock · [1×] speed · [×] thoát
+- [C] contain · [V] cover · [−] [+] zoom · [1×] speed · [×] thoát
 
 Nền tảng hỗ trợ:
 - Facebook: Video Reels, Watch, posts
