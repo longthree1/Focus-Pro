@@ -3,7 +3,7 @@
 > **Trải nghiệm xem video Facebook/Reels như rạp chiếu phim ngay trên trình duyệt** — với giao diện điều khiển hiện đại, tự ẩn thông minh và nhiều tính năng chuyên nghiệp.
 
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com) 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue)](https://github.com/longthree1/Focus-Pro)
+[![Version](https://img.shields.io/badge/version-1.5.0-blue)](https://github.com/longthree1/Focus-Pro)
 
 ## ✨ Tính năng nổi bật
 
@@ -19,10 +19,12 @@
 
 | Phím tắt          | Chức năng                          |
 |-------------------|------------------------------------|
-| `Alt + Z` / `Alt + V` | Focus (đầy màn / vừa màn)         |
+| `Alt + Z`         | Focus (vừa màn FB) / Bật Focus Meet / Bật Clean Gifts (TikTok) |
+| `Alt + V`         | Focus Cover (phóng đầy, crop - chỉ FB) |
 | `Alt + F`         | Fullscreen thật (không có UI trình duyệt) |
-| `Alt + X`         | Thoát Focus mode                   |
+| `Alt + X`         | Thoát Focus / Tắt chế độ (cả FB, Meet, TikTok) |
 | `Alt + A`         | Bật/Tắt Khóa âm                    |
+| `Alt + S`         | Cycle tốc độ phát (0.5x → 2x)      |
 | `Space`           | Play / Pause                       |
 | `←` `→`           | Tua nhanh 5 giây                   |
 | `↑` `↓`           | Tăng / Giảm âm lượng               |
@@ -37,7 +39,7 @@
 1. Tải về và giải nén file zip
 2. Mở `chrome://extensions`
 3. Bật **Developer mode**
-4. Nhấn **Load unpacked** → chọn thư mục `fb-reel-focus-pro`
+4. Nhấn **Load unpacked** → chọn thư mục `focus-pro`
 
 ### Cách 2: Cài từ Chrome Web Store (sắp có)
 
@@ -53,16 +55,20 @@
 
 ## 📝 Lịch sử cập nhật
 
-### v1.4.0 (Current)
+### v1.5.0 (Current)
+- Bổ sung phím tắt đồng nhất trên các nền tảng (Alt+Z / Alt+X)
+- Sửa lỗi xung đột phím tắt khi gõ văn bản (Typing guard cho TikTok/Meet)
+- Khắc phục triệt để lỗi rò rỉ Message Port ("Message port closed") trên toàn bộ extension
+- Sửa lỗi icon bị vuông ô (□) trên Popup
+- Bổ sung thực thi phím Alt+S để đổi tốc độ phát như thiết kế ban đầu
+- Cải thiện Meet/TikTok scanning bằng MutationObserver để tối ưu hiệu năng
+- Cải thiện Audio Lock, sửa lỗi UI cập nhật trạng thái
+
+### v1.4.0 
 - Sửa lỗi controls không tự ẩn khi để yên chuột
 - Cải thiện Audio Lock mạnh hơn, sửa race condition
 - Thêm video removal observer
 - Tối ưu hiệu năng và trải nghiệm người dùng
 
-## 📜 License
-
-MIT License
-
----
 
 **Made with ❤️ for people who love watching Reels & Videos without distraction.**
