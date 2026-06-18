@@ -1,0 +1,34 @@
+name: Build and Release Extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Nén thư mục extension thành file Zip
+        run: |
+          # Di chuyển vào thư mục chứa code của bạn
+          cd focus-pro
+          # Nén toàn bộ file bên trong thành file zip ở thư mục gốc
+          zip -r ../focus-pro-${{ github.ref_name }}.zip ./*
+          cd ..
+
+      - name: Tạo GitHub Release và Tải lên file Zip
+        uses: softprops/action-gh-release@v2
+        with:
+  
+          files: focus-pro-${{ github.ref_name }}.zip
+
+          generate_release_notes: true
