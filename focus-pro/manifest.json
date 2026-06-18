@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Focus Pro",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Fullscreen/focus player for Facebook, Google Meet, and TikTok with auto-hiding icon controls, audio lock, and playback speed.",
   "permissions": [
     "storage",

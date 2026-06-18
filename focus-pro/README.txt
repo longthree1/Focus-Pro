@@ -1,10 +1,12 @@
-Focus Pro v1.5.0
+Focus Pro v1.6.0
+
+Cập nhật v1.6.0:
+- Thêm tính năng "Mở trong Watch": Bấm Alt+W (hoặc biểu tượng ↗ trên thanh điều khiển) để mở Reel hiện tại sang giao diện Facebook Watch truyền thống ở Tab mới (dành cho ai muốn dùng player mặc định của FB).
 
 Cập nhật v1.5.0:
-- Thêm Playback Speed: chuột phải vào nút Speed để cycle 0.5x → 0.75x → 1x → 1.25x → 1.5x → 1.75x → 2x.
-- Thêm Audio Lock: giữ âm thanh gốc khi mute video (Alt+A).
-- Sửa lỗi Alt+V giờ chuyển sang chế độ "cover" thay vì duplicate "contain".
-- Sửa lỗi Audio Lock UI cập nhật trạng thái trên overlay.
+- Nâng cấp Playback Speed: Hiển thị Popup Menu mượt mà để chọn tốc độ (0.5x - 2x).
+- Tối ưu Audio Lock: Tự động chạy ngầm, luôn luôn giữ âm thanh gốc khi Facebook tự tắt tiếng (ẩn khỏi giao diện cho gọn).
+- Sửa lỗi Alt+V chuyển sang chế độ "cover" thay vì duplicate "contain".
 - Sửa lỗi toast messages hiển thị tên mới "Focus Mode".
 - Bỏ auto-pause: video/audio tiếp tục chạy khi chuyển tab.
 - Thêm isTypingTarget guard cho tất cả keyboard listeners (không can thiệp khi gõ text).
@@ -18,6 +20,7 @@ Phím tắt:
 Alt+Z: Focus contain (vừa màn FB) / Bật Focus Meet / Bật Clean Gifts (TikTok)
 Alt+V: Focus cover (phóng đầy, crop - FB)
 Alt+X: Thoát Focus / Disable (cả FB, Meet, TikTok)
+Alt+W: Mở Reel ở tab Facebook Watch (↗)
 Alt+S: Cycle tốc độ phát (0.5x → 2x)
 Space: Play/Pause
 ← / →: Tua 5 giây
@@ -25,7 +28,7 @@ Space: Play/Pause
 M: Tắt/bật tiếng thủ công
 
 Nút trên overlay (hiện khi hover):
-- [C] contain · [V] cover · [−] [+] zoom · [1×] speed · [×] thoát
+- [C] contain · [V] cover · [−] [+] zoom · [1×] speed · [↗] open watch · [×] thoát
 
 Nền tảng hỗ trợ:
 - Facebook: Video Reels, Watch, posts

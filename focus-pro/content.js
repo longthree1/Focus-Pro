@@ -473,7 +473,8 @@
       fullscreen: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4"/></svg>',
       fullscreenExit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M20 15h-5v5M4 15h5v5"/></svg>',
       close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
-      speed: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><text x="12" y="21" text-anchor="middle" font-size="6" font-weight="700" fill="currentColor" stroke="none"></text></svg>'
+      speed: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/><text x="12" y="21" text-anchor="middle" font-size="6" font-weight="700" fill="currentColor" stroke="none"></text></svg>',
+      watch: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>'
     };
     return icons[name] || icons.play;
   }
@@ -543,6 +544,7 @@
       makeButton('zoom-out', 'zoomOut', 'Thu nhỏ'),
       makeButton('zoom-in', 'zoomIn', 'Phóng to'),
       makeButton('speed', 'speed', 'Tốc độ phát'),
+      makeButton('open-watch', 'watch', 'Mở tab Watch'),
       makeButton('fullscreen', 'fullscreen', 'Toàn màn hình'),
       makeButton('close', 'close', 'Tắt Focus', `${EXT}-danger`)
     );
@@ -605,6 +607,7 @@
       } else {
         if (menu) menu.classList.remove('show');
       }
+      if (act === 'open-watch') openInWatch();
       if (act === 'fullscreen') requestFullscreenSafe({ preserveVisibility: true });
       if (act === 'close') deactivate();
       if (act !== 'close') showControls('button');
@@ -1141,6 +1144,20 @@
     toast(`Tốc độ ${rate === 1 ? 'chuẩn' : rate + 'x'}`);
   }
 
+  function openInWatch() {
+    const match = location.href.match(/\/reel\/(\d+)/);
+    if (match && match[1]) {
+      const v = state.activeVideo || findBestVideo();
+      if (v) {
+        v.pause();
+      }
+      window.open(`https://www.facebook.com/watch/?v=${match[1]}`, '_blank');
+      deactivate();
+    } else {
+      toast('Không tìm thấy ID Reel để mở Watch', 2000);
+    }
+  }
+
   window.addEventListener('keydown', (e) => {
     if (isTypingTarget(e.target)) return;
 
@@ -1164,6 +1181,11 @@
       e.preventDefault();
       if (!state.activeVideo) activate({ fit: state.fit || 'cover' });
       cycleSpeed({ preserveVisibility: true });
+      return;
+    }
+    if (e.altKey && e.code === 'KeyW') {
+      e.preventDefault();
+      openInWatch();
       return;
     }
     if (e.altKey && e.code === 'KeyX') {
