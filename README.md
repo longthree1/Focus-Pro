@@ -23,7 +23,7 @@
 | `Alt + Z`         | Focus (vừa màn FB) / Bật Focus Meet / Bật Clean Gifts (TikTok) |
 | `Alt + V`         | Focus Cover (phóng đầy, crop - chỉ FB) |
 | `Alt + F`         | Fullscreen thật (không có UI trình duyệt) |
-| `Alt + W`         | Nhảy sang giao diện Facebook Watch truyền thống (ép mở HD) |
+| `Alt + W`         | Nhảy sang giao diện Facebook Watch truyền thống |
 | `Alt + S`         | Lựa chọn/Chuyển đổi tốc độ phát    |
 | `Alt + X`         | Thoát Focus / Tắt chế độ (cả FB, Meet, TikTok) |
 | `Space`           | Play / Pause                       |
