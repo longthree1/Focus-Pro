@@ -1147,10 +1147,9 @@
   function openInWatch() {
     const match = location.href.match(/\/reel\/(\d+)/);
     if (match && match[1]) {
-      const v = state.activeVideo || findBestVideo();
-      if (v) {
-        v.pause();
-      }
+      document.querySelectorAll('video').forEach(vid => {
+        try { vid.pause(); } catch(e) {}
+      });
       window.open(`https://www.facebook.com/watch/?v=${match[1]}`, '_blank');
       deactivate();
     } else {
