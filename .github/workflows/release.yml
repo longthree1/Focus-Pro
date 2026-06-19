@@ -1,15 +1,16 @@
-name: Build and Release Extension
+name: Update Latest Release
+
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 jobs:
-  build:
-    name: Create Release
+  update-latest-release:
     runs-on: ubuntu-latest
     
+
     permissions:
       contents: write
 
@@ -17,18 +18,27 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Nén thư mục extension thành file Zip
+      - name: Nén và Ghi đè file Zip vào Release mới nhất
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Di chuyển vào thư mục chứa code của bạn
+
+          LATEST_TAG=$(gh release view --json tagName -q .tagName || echo "")
+          
+          if [ -z "$LATEST_TAG" ]; then
+            echo "Chưa có bản Release nào để cập nhật. Vui lòng tạo Release trước!"
+            exit 1
+          fi
+          
+          echo "Đã tìm thấy bản Release mới nhất: $LATEST_TAG"
+          
+
+          ZIP_NAME="focus-pro-${LATEST_TAG}.zip"
+          
+
           cd focus-pro
-          # Nén toàn bộ file bên trong thành file zip ở thư mục gốc
-          zip -r ../focus-pro-${{ github.ref_name }}.zip ./*
+          zip -r "../${ZIP_NAME}" ./*
           cd ..
+          
 
-      - name: Tạo GitHub Release và Tải lên file Zip
-        uses: softprops/action-gh-release@v2
-        with:
-  
-          files: focus-pro-${{ github.ref_name }}.zip
-
-          generate_release_notes: false
+          gh release upload "$LATEST_TAG" "$ZIP_NAME" --clobber
