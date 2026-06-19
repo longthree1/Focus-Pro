@@ -830,6 +830,8 @@
       loadedmetadata: () => { scheduleAudioRepair('loadedmetadata'); updateProgressUi(); },
       durationchange: () => updateProgressUi(),
       timeupdate: () => updateProgressUi(),
+      ratechange: () => { if (state.activeVideo && state.activeVideo.playbackRate !== state.playbackRate) state.activeVideo.playbackRate = state.playbackRate; },
+      seeked: () => { if (state.activeVideo && state.activeVideo.playbackRate !== state.playbackRate) state.activeVideo.playbackRate = state.playbackRate; scheduleAudioRepair('seeked'); },
       click: () => scheduleAudioRepair('click')
     };
     Object.entries(state.mediaHandlers).forEach(([eventName, handler]) => video.addEventListener(eventName, handler, true));
